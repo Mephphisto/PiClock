@@ -71,12 +71,5 @@ class Wiim:
         except (requests.exceptions.RequestException, ValueError, RuntimeError):
             traceback.print_exc()
             return None
-        
-    def state(self) -> str:
-        """Return the current playback state: 'play', 'pause', or 'stop'."""
-        try:
-            ret = self._cmd('getPlayState')
-            return ret['playState']
-        except (requests.exceptions.RequestException, ValueError, RuntimeError):
-            traceback.print_exc()
-            return None
+
+
