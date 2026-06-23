@@ -58,7 +58,12 @@ async def main(args):
     task = asyncio.create_task(asyncio.sleep(0.0))
     while True:
         media_info = wiim.media_info()
-        playing_media = wiim.state() == 'play' and wiim.get_cover() is not None
+        if wiim.state() == 'play':
+            cover = wiim.get_cover()
+            playing_media =  cover is not None
+        else:
+            playing_media = False
+        
         if playing_media:
             try:
                 if media_info and (
@@ -66,7 +71,7 @@ async def main(args):
                     or last_state is not State.MUSIC_COVER
                 ):
                     track_id = media_info['trackId']
-                    img = create_cover_image(wiim)
+                    img = create_cover_image(raw=cover, meta_data=media_info)
                     await task
                     task = asyncio.create_task(show_image(display, img))
                     last_state = State.MUSIC_COVER

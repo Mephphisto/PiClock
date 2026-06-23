@@ -19,7 +19,7 @@ services:
 
     volumes:
       - "./config.json:/app/config.json:ro"
-      - "./Futura.ttf:/app/Futura.ttf:ro"
+      - "./Futura.ttc:/app/Futura.ttc:ro"
       - "/sys:/sys"
       - "/proc/device-tree:/proc/device-tree:ro"
       # Timezone

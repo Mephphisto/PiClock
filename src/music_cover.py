@@ -1,5 +1,6 @@
 """Album art renderer for the PiClock e-ink display."""
 import math
+from typing import Any
 
 from PIL import Image, ImageFont, ImageDraw, ImageOps
 from inky.inky_ac073tc1a import _RESOLUTION_7_3_INCH
@@ -21,14 +22,12 @@ def str_wrap(text: str) -> str:
     return ' '.join(ann)
 
 
-def create_cover_image(dev: Wiim) -> Image.Image:  # pylint: disable=too-many-locals
+def create_cover_image(raw:Any, meta_data:str = '') -> Image.Image:  # pylint: disable=too-many-locals
     """Render album art with title and artist annotation for the display."""
-    raw = dev.fetch_img()
     if raw is None:
         raise RuntimeError("fetch_img returned None")
     img = raw.convert('RGB')
     img = img.resize((RESOLUTION[0], RESOLUTION[0]), Image.Resampling.LANCZOS)
-    meta_data = dev.media_info()
     if meta_data is None:
         raise RuntimeError("media_info returned None")
     annotation1 = f"{meta_data['title']}"
