@@ -71,5 +71,3 @@ class Wiim:
         except (requests.exceptions.RequestException, ValueError, RuntimeError):
             traceback.print_exc()
             return None
-
-
