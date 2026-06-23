@@ -189,7 +189,7 @@ async def _draw_ha(drw: ImageDraw.Draw, ha: home_assistant.HaClient, color):
             (RESOLUTION[0] - 260, RESOLUTION[1] - 30), percip,
             color, font=font, anchor="lm"
         )
-    except Exception:  # noqa: BLE001
+    except Exception:  # noqa: W0718
         traceback.print_exc()
 
 

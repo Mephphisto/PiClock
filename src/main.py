@@ -70,7 +70,7 @@ async def main(args):
                     await task
                     task = asyncio.create_task(show_image(display, img))
                     last_state = State.MUSIC_COVER
-            except Exception:  # noqa: BLE001
+            except Exception:  # noqa: W0718
                 traceback.print_exc()
                 playing_media = False
         if not playing_media:
