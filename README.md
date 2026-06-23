@@ -1,6 +1,6 @@
 # PiClock
-![HadoLint](https://github.com/Mephphisto/PiClock/blob/main/.github/workflows/hadolint.yml/badge.svg)
-![PyLint](https://github.com/Mephphisto/PiClock/blob/main/.github/workflows/pylint.yml/badge.svg)
+[![Hadolint](https://github.com/Mephphisto/PiClock/actions/workflows/hadolint.yml/badge.svg)](https://github.com/Mephphisto/PiClock/actions/workflows/hadolint.yml)
+[![Pylint](https://github.com/Mephphisto/PiClock/actions/workflows/pylint.yml/badge.svg)](https://github.com/Mephphisto/PiClock/actions/workflows/pylint.yml)
 An e-ink clock for the Raspberry Pi that displays animated clock faces and album art from a WiiM streamer, with live weather data from Home Assistant.
 
 ## Hardware
