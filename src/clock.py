@@ -15,20 +15,20 @@ async def clock_dark_color(ha: home_assistant.HaClient) -> Image.Image:
     """Render a CMY blob clock on a white multiply-blended background."""
     time_s = datetime.now().strftime("%H:%M")
     font = ImageFont.truetype(FUTURA_DICT, 140)
-    extended_y = Image.new('RGBA', RESOLUTION, (255, 255, 255, 0))
+    extended_y = Image.new('RGBA', RESOLUTION, (255, 255, 255, 255))
     draw = ImageDraw.Draw(extended_y)
     t = time.time() / 30 / 60
     draw.circle(
         (180 + 140 * math.sin(-t / 5), 180 + 140 * math.cos(-t / 5)),
         300, (127, 127, 0, 255)
     )
-    extended_m = Image.new('RGBA', RESOLUTION, (255, 255, 255, 0))
+    extended_m = Image.new('RGBA', RESOLUTION, (255, 255, 255, 255))
     draw = ImageDraw.Draw(extended_m)
     draw.circle(
         (180 + 140 * math.sin(t / 7), 180 + 140 * math.cos(t / 7)),
         300, (127, 0, 127, 255)
     )
-    extended_c = Image.new('RGBA', RESOLUTION, (255, 255, 255, 0))
+    extended_c = Image.new('RGBA', RESOLUTION, (255, 255, 255, 255))
     draw = ImageDraw.Draw(extended_c)
     draw.circle(
         (180 + 140 * math.sin(t / 11), 180 + 140 * math.cos(t / 11)),
