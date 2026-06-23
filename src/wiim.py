@@ -29,6 +29,14 @@ class Wiim:
             ret = self.s.get(cmd)
             ret.encoding = 'UTF-8'
             return ret.json()
+        except (requests.exceptions.RequestException, ValueError):
+            traceback.print_exc()
+            return None
+
+    def state(self):
+        """Return the current playback state string."""
+        try:
+            return self._cmd('getPlayerStatus')['status']
         except (requests.exceptions.RequestException, ValueError, RuntimeError):
             traceback.print_exc()
             return None
@@ -60,6 +68,15 @@ class Wiim:
         try:
             response = self.s.get(self.get_cover())
             return Image.open(BytesIO(response.content))
+        except (requests.exceptions.RequestException, ValueError, RuntimeError):
+            traceback.print_exc()
+            return None
+        
+    def state(self) -> str:
+        """Return the current playback state: 'play', 'pause', or 'stop'."""
+        try:
+            ret = self._cmd('getPlayState')
+            return ret['playState']
         except (requests.exceptions.RequestException, ValueError, RuntimeError):
             traceback.print_exc()
             return None
