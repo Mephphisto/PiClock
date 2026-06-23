@@ -1,0 +1,4 @@
+inky
+requests
+pillow
+homeassistant_api  

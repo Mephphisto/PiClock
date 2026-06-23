@@ -1,0 +1,11 @@
+{
+  "WiM_IP":"[Your WIIM IP/URL]",
+  "HA_Addr":"[Your Homeassistant IP/URL]",
+  "HA_API_Key":"[!secret Key here]",
+  "HA_entities":{
+    "baro": "sensor.[Your Baro Sensor Name]",
+    "temp": "sensor.[Your Temperature Sensor Name]",
+    "humid": "sensor.[Your Humidity Sensor Name]",
+    "baro_change": "sensor.[Your Baro Change Sensor Name]"
+  }
+}

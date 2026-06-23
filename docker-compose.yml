@@ -1,0 +1,30 @@
+services:
+  piclock:
+    build: .
+    user: "root"
+    container_name: piclock
+    restart: unless-stopped
+    network_mode: host
+
+    environment:
+      TZ: Europe/Berlin
+
+    devices:
+      - "/dev/spidev0.0:/dev/spidev0.0"
+      - "/dev/gpiomem:/dev/gpiomem"
+      - "/dev/gpiochip0:/dev/gpiochip0"
+      - "/dev/gpiochip4:/dev/gpiochip4"
+      - "/dev/i2c-1:/dev/i2c-1"
+      - "/dev/i2c-2:/dev/i2c-2"
+
+    volumes:
+      - "./config.json:/app/config.json:ro"
+      - "/sys:/sys"
+      - "/proc/device-tree:/proc/device-tree:ro"
+      # Timezone
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
+
+    cap_add:
+      - SYS_RAWIO
+      - SYS_ADMIN
