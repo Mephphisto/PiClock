@@ -29,13 +29,17 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Lowercase the image name
+      id: image
+      run: echo "name=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
     - name: Build and push the Docker image
       uses: docker/build-push-action@v6
       with:
         context: .
         file: ./Dockerfile
-        platforms: linux/arm64        # match your Pi's `uname -m`
+        platforms: linux/arm64
         push: true
         tags: |
-          ghcr.io/${{ github.repository }}:latest
-          ghcr.io/${{ github.repository }}:${{ github.sha }}
+          ${{ steps.image.outputs.name }}:latest
+          ${{ steps.image.outputs.name }}:${{ github.sha }}
