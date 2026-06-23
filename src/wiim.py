@@ -29,15 +29,7 @@ class Wiim:
             ret = self.s.get(cmd)
             ret.encoding = 'UTF-8'
             return ret.json()
-        except (requests.exceptions.RequestException, ValueError):
-            traceback.print_exc()
-            return None
-
-    def state(self):
-        """Return the current playback state string."""
-        try:
-            return self._cmd('getPlayerStatus')['status']
-        except (requests.exceptions.RequestException, ValueError):
+        except (requests.exceptions.RequestException, ValueError, RuntimeError):
             traceback.print_exc()
             return None
 
@@ -48,7 +40,7 @@ class Wiim:
             ret = ret['metaData']
             self.meta = ret
             return ret
-        except (requests.exceptions.RequestException, ValueError):
+        except (requests.exceptions.RequestException, ValueError, RuntimeError):
             traceback.print_exc()
             return None
 
@@ -59,7 +51,7 @@ class Wiim:
             if img_url not in ['un_known', 'unknown']:
                 return img_url
             return None
-        except (requests.exceptions.RequestException, ValueError):
+        except (requests.exceptions.RequestException, ValueError, RuntimeError):
             traceback.print_exc()
             return None
 
@@ -68,6 +60,6 @@ class Wiim:
         try:
             response = self.s.get(self.get_cover())
             return Image.open(BytesIO(response.content))
-        except (requests.exceptions.RequestException, ValueError):
+        except (requests.exceptions.RequestException, ValueError, RuntimeError):
             traceback.print_exc()
             return None
