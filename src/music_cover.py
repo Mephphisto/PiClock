@@ -5,8 +5,6 @@ from typing import Any
 from PIL import Image, ImageFont, ImageDraw, ImageOps
 from inky.inky_ac073tc1a import _RESOLUTION_7_3_INCH
 
-from wiim import Wiim
-
 FUTURA_DICT = "Futura.ttc"
 RESOLUTION = [_RESOLUTION_7_3_INCH[1], _RESOLUTION_7_3_INCH[0]]
 

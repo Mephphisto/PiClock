@@ -63,7 +63,6 @@ async def main(args):
             playing_media =  cover is not None
         else:
             playing_media = False
-        
         if playing_media:
             try:
                 if media_info and (
