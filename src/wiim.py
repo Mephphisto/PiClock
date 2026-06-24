@@ -1,4 +1,5 @@
 """WiiM HTTP API client with cover art fetching."""
+
 import traceback
 from io import BytesIO
 from typing import Union
@@ -8,9 +9,15 @@ import urllib3
 from PIL import Image
 
 NONE_METADATA = {
-    'album': 'unknown', 'title': 'unknown', 'subtitle': 'unknown',
-    'artist': 'unknown', 'albumArtURI': 'un_known', 'sampleRate': 'unknown',
-    'bitDepth': 'unknown', 'bitRate': '0', 'trackId': 'unknown',
+    "album": "unknown",
+    "title": "unknown",
+    "subtitle": "unknown",
+    "artist": "unknown",
+    "albumArtURI": "un_known",
+    "sampleRate": "unknown",
+    "bitDepth": "unknown",
+    "bitRate": "0",
+    "trackId": "unknown",
 }
 
 
@@ -28,7 +35,7 @@ class Wiim:
         try:
             cmd = f"https://{self.ip}/httpapi.asp?command={cmd}"
             ret = self.s.get(cmd)
-            ret.encoding = 'UTF-8'
+            ret.encoding = "UTF-8"
             return ret.json()
         except (requests.exceptions.RequestException, ValueError):
             traceback.print_exc()
@@ -37,7 +44,7 @@ class Wiim:
     def state(self):
         """Return the current playback state string."""
         try:
-            return self._cmd('getPlayerStatus')['status']
+            return self._cmd("getPlayerStatus")["status"]
         except (requests.exceptions.RequestException, ValueError, RuntimeError):
             traceback.print_exc()
             return None
@@ -45,8 +52,8 @@ class Wiim:
     def media_info(self):
         """Return the current track metadata dict."""
         try:
-            ret = self._cmd('getMetaInfo')
-            ret = ret['metaData']
+            ret = self._cmd("getMetaInfo")
+            ret = ret["metaData"]
             self.meta = ret
             return ret
         except (requests.exceptions.RequestException, ValueError, RuntimeError):
@@ -59,12 +66,11 @@ class Wiim:
             if self.meta is NONE_METADATA:
                 _ = self.media_info()
 
-            img_url = self.meta['albumArtURI']
-            if img_url not in ['un_known', 'unknown']:
+            img_url = self.meta["albumArtURI"]
+            if img_url not in ["un_known", "unknown"]:
                 return img_url
             return None
         except (requests.exceptions.RequestException, ValueError, RuntimeError):
-            traceback.print_exc()
             return None
 
     def fetch_img(self, cover_url: str) -> Union[Image.Image, None]:

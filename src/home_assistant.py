@@ -1,4 +1,5 @@
 """Home Assistant REST API client wrapper."""
+
 from typing import Dict
 
 from homeassistant_api import Client
@@ -21,7 +22,7 @@ class HaClient:  # pylint: disable=too-few-public-methods
         """Return the state and unit of measurement for a named entity."""
         try:
             res = self.entities[entity_name].get_state()
-            return res.state + ' ' + res.attributes['unit_of_measurement']
+            return res.state + " " + res.attributes["unit_of_measurement"]
         except (KeyError, UnauthorizedError) as e:
             print(f"Error fetching value for {entity_name}: {e}")
             return "Error"
