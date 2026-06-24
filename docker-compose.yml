@@ -1,6 +1,6 @@
 services:
   piclock:
-    image: ghcr.io/mephphisto/piclock:latest
+    image: ghcr.io/mephphisto/piclock:stable
     user: "root"
     container_name: piclock
     restart: unless-stopped
