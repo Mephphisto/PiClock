@@ -1,6 +1,5 @@
 """Album art renderer for the PiClock e-ink display."""
 import math
-from typing import Any
 
 from PIL import Image, ImageFont, ImageDraw, ImageOps
 from inky.inky_ac073tc1a import _RESOLUTION_7_3_INCH
