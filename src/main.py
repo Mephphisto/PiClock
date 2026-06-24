@@ -9,8 +9,9 @@ from datetime import datetime, timedelta
 from enum import Enum
 
 import gpiod
+import validators
 from gpiod.line import Direction, Edge, Value
-from inky.inky_e673 import Inky, RESET_PIN, BUSY_PIN, DC_PIN, CS0_PIN
+from inky.inky_e673 import BUSY_PIN, CS0_PIN, DC_PIN, RESET_PIN, Inky
 
 import clock
 from display import show_image
@@ -65,11 +66,10 @@ async def main(args):
     task = asyncio.create_task(asyncio.sleep(0.0))
     while True:
         media_info = wiim.media_info()
+        playing_media = False
         if wiim.state() == "play":
             cover = wiim.get_cover()
-            playing_media = cover is not None or "unknow" in cover
-        else:
-            playing_media = False
+            playing_media = validators.url(cover)
         if playing_media:
             try:
                 if media_info and (
@@ -86,7 +86,7 @@ async def main(args):
             except (KeyError, OSError, RuntimeError, ValueError):
                 traceback.print_exc()
                 playing_media = False
-        if not playing_media:
+        else:
             if t != datetime.now().strftime("%H:%M") or last_state is not State.CLOCK:
                 if t.split(":")[0] != datetime.now().strftime("%H"):
                     idx = random.randint(0, len(clock.CLOCKS) - 1)
