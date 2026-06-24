@@ -1,6 +1,7 @@
 """WiiM HTTP API client with cover art fetching."""
 import traceback
 from io import BytesIO
+from typing import Union
 
 import requests
 import urllib3
@@ -55,6 +56,9 @@ class Wiim:
     def get_cover(self) -> str:
         """Return the album art URL, or None if unavailable."""
         try:
+            if self.meta is NONE_METADATA:
+                _ = self.media_info()
+
             img_url = self.meta['albumArtURI']
             if img_url not in ['un_known', 'unknown']:
                 return img_url
@@ -63,10 +67,10 @@ class Wiim:
             traceback.print_exc()
             return None
 
-    def fetch_img(self):
+    def fetch_img(self, cover_url: str) -> Union[Image.Image, None]:
         """Fetch and return the album art as a PIL Image."""
         try:
-            response = self.s.get(self.get_cover())
+            response = self.s.get(cover_url)
             return Image.open(BytesIO(response.content))
         except (requests.exceptions.RequestException, ValueError, RuntimeError):
             traceback.print_exc()

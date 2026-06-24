@@ -4,6 +4,7 @@ from typing import Any
 
 from PIL import Image, ImageFont, ImageDraw, ImageOps
 from inky.inky_ac073tc1a import _RESOLUTION_7_3_INCH
+from tests.test_wiim import wiim
 
 FUTURA_DICT = "Futura.ttc"
 RESOLUTION = [_RESOLUTION_7_3_INCH[1], _RESOLUTION_7_3_INCH[0]]
@@ -20,8 +21,9 @@ def str_wrap(text: str) -> str:
     return ' '.join(ann)
 
 
-def create_cover_image(raw:Any, meta_data:str = '') -> Image.Image:  # pylint: disable=too-many-locals
+def create_cover_image(cover:Any, meta_data:str = '') -> Image.Image:  # pylint: disable=too-many-locals
     """Render album art with title and artist annotation for the display."""
+    raw = wiim.fetch_img(cover)
     if raw is None:
         raise RuntimeError("fetch_img returned None")
     img = raw.convert('RGB')
