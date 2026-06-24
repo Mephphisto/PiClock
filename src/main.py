@@ -70,7 +70,8 @@ async def main(args):
                     or last_state is not State.MUSIC_COVER
                 ):
                     track_id = media_info['trackId']
-                    img = create_cover_image(cover=cover, meta_data=media_info)
+                    img = create_cover_image(raw=wiim.fetch_img(cover),
+                                             meta_data=media_info)
                     await task
                     task = asyncio.create_task(show_image(display, img))
                     last_state = State.MUSIC_COVER
