@@ -5,16 +5,25 @@ on:
     types:
       - completed
     branches: [ "main" ]
+  push:
+    tags: [ "v*.*.*" ]          # stable releases, e.g. v1.2.3
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    # only run if Hadolint actually passed
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # run on a tag push, OR when Hadolint passed on main
+    if: >-
+      ${{ github.event_name == 'push' ||
+          github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
       packages: write          # needed to push to GHCR
     steps:
     - uses: actions/checkout@v4
+      with:
+        # build the exact commit Hadolint linted; on a tag push this
+        # falls back to the tag's own commit
+        ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -33,6 +42,18 @@ jobs:
       id: image
       run: echo "name=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
 
+    - name: Extract tags / labels
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ steps.image.outputs.name }}
+        tags: |
+          type=raw,value=latest,enable=${{ github.event_name == 'workflow_run' }}
+          type=sha,enable=${{ github.event_name == 'workflow_run' }}
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=raw,value=stable,enable=${{ github.event_name == 'push' }}
+
     - name: Build and push the Docker image
       uses: docker/build-push-action@v6
       with:
@@ -40,6 +61,5 @@ jobs:
         file: ./Dockerfile
         platforms: linux/arm64
         push: true
-        tags: |
-          ${{ steps.image.outputs.name }}:latest
-          ${{ steps.image.outputs.name }}:${{ github.sha }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
