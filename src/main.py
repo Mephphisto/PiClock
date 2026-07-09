@@ -90,7 +90,7 @@ async def main(args):
             if t != datetime.now().strftime("%H:%M") or last_state is not State.CLOCK:
                 if t.split(":")[0] != datetime.now().strftime("%H"):
                     idx = random.randint(0, len(clock.CLOCKS) - 1)
-                img = await clock.CLOCKS[idx](ha)
+                img = await clock.CLOCKS[idx](await ha.get_data())
                 await task
                 task = asyncio.create_task(show_image(display, img))
                 last_state = State.CLOCK

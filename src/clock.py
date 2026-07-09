@@ -5,6 +5,7 @@ import random
 import time
 import traceback
 from datetime import datetime
+from typing import Tuple
 
 from PIL import Image, ImageFont, ImageDraw, ImageFilter, ImageChops
 
@@ -177,14 +178,12 @@ async def clock_triangles(ha: home_assistant.HaClient) -> Image.Image:
     return extended
 
 
-async def _draw_ha(drw: ImageDraw.Draw, ha: home_assistant.HaClient, color):
+async def _draw_ha(drw: ImageDraw.Draw, disp_data: Tuple[str, str, str, str], color):
     """Draw Home Assistant sensor values in the corners of the image."""
     try:
         font = ImageFont.truetype(FUTURA_DICT, 35)
-        temp = await ha.get_val("temp")
-        baro = await ha.get_val("baro")
-        humid = await ha.get_val("humid")
-        percip = await ha.get_val("baro_change")
+        temp, humid, baro, percip = disp_data
+
         drw.text((20, RESOLUTION[1] - 80), temp, color, font=font, anchor="lm")
         drw.text((20, RESOLUTION[1] - 30), humid, color, font=font, anchor="lm")
         drw.text(
