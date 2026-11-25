@@ -1,39 +1,18 @@
 name:  Pyright Action
 
 on:
-  pull_request:
+  push:
     paths:
-      - "**.py"
-
-permissions:
-  contents: read
-  packages: read
-  pull-requests: write
-  issues: write
+        - "**.py"
 
 jobs:
-  check-types:
-    name: pyright
+  pyright:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Branch
-        uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
-          cache: "pip"
-
-      - name: Configure Python Environment
-        run: |
-          python -m venv .venv
-          source .venv/bin/activate
-          pip install -r requirements.txt
-
-      - run: echo "$PWD/.venv/bin" >> $GITHUB_PATH
-
-      - name: Simple Pyright Action
-        uses: YajJackson/simple-pyright-action@v1.0.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          include-base-comparison: true
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - uses: jakebailey/pyright-action@v3
