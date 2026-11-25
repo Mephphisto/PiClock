@@ -16,9 +16,10 @@ concurrency:
 jobs:
   gate:
     runs-on: ubuntu-latest
-    # quick filter: a tag push, or the triggering lint run passed
+    # quick filter: a tag push, a manual run, or the triggering lint run passed
     if: >-
       ${{ github.event_name == 'push' ||
+          github.event_name == 'workflow_dispatch' ||
           github.event.workflow_run.conclusion == 'success' }}
     permissions:
       actions: read            # needed for `gh run list`
@@ -83,8 +84,8 @@ jobs:
         context: ${{ github.event_name == 'workflow_run' && 'git' || 'workflow' }}
         images: ${{ steps.image.outputs.name }}
         tags: |
-          type=raw,value=latest,enable=${{ github.event_name == 'workflow_run' }}
-          type=sha,enable=${{ github.event_name == 'workflow_run' }}
+          type=raw,value=latest,enable=${{ github.event_name != 'push' }}
+          type=sha,enable=${{ github.event_name != 'push' }}
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
           type=raw,value=stable,enable=${{ github.event_name == 'push' }}
