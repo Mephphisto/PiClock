@@ -53,6 +53,9 @@ class Wiim:
         """Return the current track metadata dict."""
         try:
             ret = self._cmd("getMetaInfo")
+            if ret is None:
+                print("Empty Message from Wiim")
+                return None
             ret = ret["metaData"]
             self.meta = ret
             return ret
