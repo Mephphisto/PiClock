@@ -6,6 +6,7 @@ on:
     branches: [ "main" ]
   push:
     tags: [ "v*.*.*" ]          # stable releases, e.g. v1.2.3
+  workflow_dispatch:
 
 # If two lint workflows finish at the same time, only one build survives
 concurrency:
