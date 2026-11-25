@@ -32,7 +32,7 @@ class State(Enum):
 async def main(args): # noqa: R0914
     """Run the main display loop."""
     async with await anyio.open_file("config.json", encoding="utf-8") as f:
-        cfg = json.load(await f.read())
+        cfg = json.loads(await f.read())
 
     if cfg is None:
         raise RuntimeError("Failed to load config.json")
