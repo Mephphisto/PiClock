@@ -63,7 +63,7 @@ class Wiim:
             traceback.print_exc()
             return None
 
-    def get_cover(self) -> str:
+    def get_cover(self) -> str | None:
         """Return the album art URL, or None if unavailable."""
         try:
             if self.meta is NONE_METADATA:
@@ -76,7 +76,7 @@ class Wiim:
         except (requests.exceptions.RequestException, ValueError, RuntimeError):
             return None
 
-    def fetch_img(self, cover_url: str) -> Union[Image.Image, None]:
+    def fetch_img(self, cover_url: str) -> Image.Image | None:
         """Fetch and return the album art as a PIL Image."""
         try:
             response = self.s.get(cover_url)

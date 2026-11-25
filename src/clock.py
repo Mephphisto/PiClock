@@ -5,15 +5,15 @@ import random
 import time
 import traceback
 from datetime import datetime
-from typing import Tuple
 
-from PIL import Image, ImageFont, ImageDraw, ImageFilter, ImageChops
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
+from PIL.ImageDraw import Draw
 
 import home_assistant
 from music_cover import FUTURA_DICT, RESOLUTION
 
 
-async def clock_dark_color(ha: home_assistant.HaClient) -> Image.Image:
+async def clock_dark_color(ha_data: tuple[str, str, str, str]) -> Image.Image:
     """Render a CMY blob clock on a white multiply-blended background."""
     time_s = datetime.now().strftime("%H:%M")
     font = ImageFont.truetype(FUTURA_DICT, 140)
@@ -53,11 +53,12 @@ async def clock_dark_color(ha: home_assistant.HaClient) -> Image.Image:
     draw.text(
         (240, 240), time_s, (255, 255, 255, 255), font=font, anchor="ms", outline=None
     )
-    await _draw_ha(draw, ha, (0, 0, 0, 255))
+
+    await _draw_ha(draw, ha_data, (0, 0, 0, 255))
     return extended
 
 
-async def clock_colorfull(ha: home_assistant.HaClient) -> Image.Image:
+async def clock_colorfull(ha_data: tuple[str, str, str, str]) -> Image.Image:
     """Render an inverted RGB blob clock."""
     font = ImageFont.truetype(FUTURA_DICT, 140)
     time_s = datetime.now().strftime("%H:%M")
@@ -82,11 +83,11 @@ async def clock_colorfull(ha: home_assistant.HaClient) -> Image.Image:
     extended = ImageChops.invert(Image.merge("RGB", extends))
     draw = ImageDraw.Draw(extended)
     draw.text((240, 240), time_s, (255, 255, 255), font=font, anchor="ms", outline=None)
-    await _draw_ha(draw, ha, (0, 0, 0))
+    await _draw_ha(draw, ha_data, (0, 0, 0))
     return extended
 
 
-async def clock_stripy_black(ha: home_assistant.HaClient) -> Image.Image:
+async def clock_stripy_black(ha_data: tuple[str, str, str, str]) -> Image.Image:
     """Render a black background scattered with random white stripes."""
     font = ImageFont.truetype(FUTURA_DICT, 140)
     time_s = datetime.now().strftime("%H:%M")
@@ -104,14 +105,12 @@ async def clock_stripy_black(ha: home_assistant.HaClient) -> Image.Image:
             width=1,
         )
     draw.text((240, 240), time_s, (0), font=font, anchor="ms", outline=None)
-    await _draw_ha(draw, ha, (255))
+    await _draw_ha(draw, ha_data, (255))
     return extended
 
 
-async def clock_stripy_white(ha: home_assistant.HaClient) -> Image.Image:
+async def clock_stripy_white(ha_data: tuple[str, str, str, str]) -> Image.Image:
     """Render a white background scattered with random black stripes."""
-    font = ImageFont.truetype(FUTURA_DICT, 140)
-    time_s = datetime.now().strftime("%H:%M")
     extended = Image.new("L", RESOLUTION, (255))
     draw = ImageDraw.Draw(extended)
     for _ in range(700):
@@ -125,12 +124,11 @@ async def clock_stripy_white(ha: home_assistant.HaClient) -> Image.Image:
             fill=(0),
             width=1,
         )
-    draw.text((240, 240), time_s, (255), font=font, anchor="ms", outline=None)
-    await _draw_ha(draw, ha, (0))
+    await _draw_ha(draw, ha_data, (0))
     return extended
 
 
-async def clock_dropshadow(ha: home_assistant.HaClient) -> Image.Image:
+async def clock_dropshadow(ha_data: tuple[str, str, str, str]) -> Image.Image:
     """Render a drop-shadow clock on a black background."""
     font = ImageFont.truetype(FUTURA_DICT, 140)
     time_s = datetime.now().strftime("%H:%M")
@@ -140,11 +138,11 @@ async def clock_dropshadow(ha: home_assistant.HaClient) -> Image.Image:
     extended = extended.filter(filter=ImageFilter.GaussianBlur(30))
     draw = ImageDraw.Draw(extended)
     draw.text((240, 240), time_s, (0), font=font, anchor="ms", outline=None)
-    await _draw_ha(draw, ha, (255))
+    await _draw_ha(draw, ha_data, (255))
     return extended
 
 
-async def clock_triangles(ha: home_assistant.HaClient) -> Image.Image:
+async def clock_triangles(ha_data: tuple[str, str, str, str]) -> Image.Image:
     """Render overlapping rotating polygons composited into an RGB clock."""
     font = ImageFont.truetype(FUTURA_DICT, 140)
     time_s = datetime.now().strftime("%H:%M")
@@ -174,11 +172,15 @@ async def clock_triangles(ha: home_assistant.HaClient) -> Image.Image:
     extended = ImageChops.invert(Image.merge("RGB", channels))
     draw = ImageDraw.Draw(extended)
     draw.text((240, 240), time_s, (255, 255, 255), font=font, anchor="ms", outline=None)
-    await _draw_ha(draw, ha, (0, 0, 0))
+    await _draw_ha(draw, ha_data, (0, 0, 0))
+
     return extended
 
 
-async def _draw_ha(drw: ImageDraw.Draw, disp_data: Tuple[str, str, str, str], color):
+async def _draw_ha(drw: ImageDraw.ImageDraw,
+                   disp_data: tuple[str, str, str, str],
+                   color: tuple[int, int, int] | tuple[int, int, int, int] | int
+                   ) -> None:
     """Draw Home Assistant sensor values in the corners of the image."""
     try:
         font = ImageFont.truetype(FUTURA_DICT, 35)
@@ -200,7 +202,7 @@ async def _draw_ha(drw: ImageDraw.Draw, disp_data: Tuple[str, str, str, str], co
             font=font,
             anchor="lm",
         )
-    except (OSError, IOError):
+    except OSError:
         traceback.print_exc()
 
 

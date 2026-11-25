@@ -20,7 +20,7 @@ def str_wrap(text: str) -> str:
     return " ".join(ann)
 
 
-def create_cover_image(raw: Image.Image, meta_data: str = "") -> Image.Image:  # pylint: disable=too-many-locals
+def create_cover_image(raw: Image.Image, meta_data: dict[str, str] | None) -> Image.Image:  # pylint: disable=too-many-locals
     """Render album art with title and artist annotation for the display."""
     if raw is None:
         raise RuntimeError("fetch_img returned None")

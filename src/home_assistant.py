@@ -14,7 +14,7 @@ class HaClient:  # pylint: disable=too-few-public-methods
             self.entities = {}
             with Client(addr, api_key) as client:
                 for entity_name, entity_id in entities.items():
-                    try: 
+                    try:
                         self.entities[entity_name] = client.get_entity(entity_id=entity_id)
                     except UnauthorizedError as e:
                         print(f"Error fetching entity {entity_id}: {e}")

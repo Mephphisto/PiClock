@@ -67,6 +67,7 @@ async def main(args):
     while True:
         media_info = wiim.media_info()
         playing_media = False
+        cover : None | str = None
         if wiim.state() == "play":
             cover = wiim.get_cover()
             playing_media = validators.url(cover)
@@ -77,8 +78,13 @@ async def main(args):
                     or last_state is not State.MUSIC_COVER
                 ):
                     track_id = media_info["trackId"]
+                    if cover is None:
+                        raise ValueError("No cover art URL available")
+                    cover_img = wiim.fetch_img(cover)
+                    if cover_img is None:
+                        raise ValueError("Failed to fetch cover image")
                     img = create_cover_image(
-                        raw=wiim.fetch_img(cover), meta_data=media_info
+                        raw=cover_img, meta_data=media_info
                     )
                     await task
                     task = asyncio.create_task(show_image(display, img))
