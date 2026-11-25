@@ -2,8 +2,8 @@
 
 import math
 
-from PIL import Image, ImageFont, ImageDraw, ImageOps
 from inky.inky_ac073tc1a import _RESOLUTION_7_3_INCH
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 FUTURA_DICT = "Futura.ttc"
 RESOLUTION = [_RESOLUTION_7_3_INCH[1], _RESOLUTION_7_3_INCH[0]]
@@ -20,7 +20,7 @@ def str_wrap(text: str) -> str:
     return " ".join(ann)
 
 
-def create_cover_image(raw: Image.Image, meta_data: dict[str, str] | None) -> Image.Image:  # pylint: disable=too-many-locals
+def create_cover_image(raw: Image.Image, meta_data: dict[str, str] | None) -> Image.Image:
     """Render album art with title and artist annotation for the display."""
     if raw is None:
         raise RuntimeError("fetch_img returned None")

@@ -1,7 +1,7 @@
 name: Docker Image CI
 on:
   workflow_run:
-    workflows: ["Pylint", "Pyright", "Hadolint"]
+    workflows: ["Ruff", "Pyright", "Hadolint"]
     types: [completed]
     branches: [ "main" ]
   push:
@@ -33,7 +33,7 @@ jobs:
           echo "ok=true" >> "$GITHUB_OUTPUT"; exit 0
         fi
         # the latest run of every lint workflow on main must be green
-        for wf in Pylint Pyright Hadolint; do
+        for wf in Ruff Pyright Hadolint; do
           c=$(gh run list -R "$GITHUB_REPOSITORY" --workflow "$wf" --branch main \
                --limit 1 --json conclusion -q '.[0].conclusion')
           echo "$wf: ${c:-<none>}"

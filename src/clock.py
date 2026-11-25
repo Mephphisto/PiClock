@@ -7,9 +7,7 @@ import traceback
 from datetime import datetime
 
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
-from PIL.ImageDraw import Draw
 
-import home_assistant
 from music_cover import FUTURA_DICT, RESOLUTION
 
 

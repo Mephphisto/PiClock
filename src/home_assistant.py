@@ -1,15 +1,13 @@
 """Home Assistant REST API client wrapper."""
 
-from typing import Dict, Tuple
-
 from homeassistant_api import Client
 from homeassistant_api.errors import UnauthorizedError
 
 
-class HaClient:  # pylint: disable=too-few-public-methods
+class HaClient:
     """Thin wrapper around homeassistant_api that caches entity handles."""
 
-    def __init__(self, addr: str, api_key: str, entities: Dict[str, str]):
+    def __init__(self, addr: str, api_key: str, entities: dict[str, str]):
         try:
             self.entities = {}
             with Client(addr, api_key) as client:
@@ -29,7 +27,7 @@ class HaClient:  # pylint: disable=too-few-public-methods
         except (KeyError, UnauthorizedError) as e:
             print(f"Error fetching value for {entity_name}: {e}")
             return "Error"
-    async def get_data(self) -> Tuple[str, str, str, str]:
+    async def get_data(self) -> tuple[str, str, str, str]:
         """Return the state and unit of measurement for a named entity."""
         res = []
         for entity_name in self.entities.values():

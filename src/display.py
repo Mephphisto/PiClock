@@ -1,9 +1,8 @@
 """E-ink display output with gamma, saturation, contrast, and sharpness correction."""
 
 import inky
-import PIL
-from inky.inky_ac073tc1a import Inky
-from PIL import ImageFilter
+from inky.inky_e673 import Inky
+from PIL import Image, ImageFilter
 from PIL.ImageEnhance import Color, Contrast, Sharpness
 
 GAMMA = 1.3
@@ -12,7 +11,7 @@ CONTRAST = 1.2
 SHARPNESS = 1.2
 
 
-async def show_image(display: Inky, img: PIL.Image.Image):
+async def show_image(display: Inky, img: Image.Image):
     """Apply image corrections and push the image to the e-ink display."""
     lut = ImageFilter.Color3DLUT.generate(
         (11, 11, 11), lambda r, g, b: (r**GAMMA, g**GAMMA, b**GAMMA)

@@ -2,7 +2,6 @@
 
 import traceback
 from io import BytesIO
-from typing import Union
 
 import requests
 import urllib3
@@ -31,7 +30,7 @@ class Wiim:
         self.s.verify = False
         self.meta = NONE_METADATA
 
-    def _cmd(self, cmd: str):
+    def _cmd(self, cmd: str) -> dict | None:
         try:
             cmd = f"https://{self.ip}/httpapi.asp?command={cmd}"
             ret = self.s.get(cmd)
@@ -41,15 +40,18 @@ class Wiim:
             traceback.print_exc()
             return None
 
-    def state(self):
+    def state(self) -> str | None:
         """Return the current playback state string."""
         try:
-            return self._cmd("getPlayerStatus")["status"]
+            ret = self._cmd("getPlayerStatus")
+            if ret is None:
+                return None
+            return ret["status"]
         except (requests.exceptions.RequestException, ValueError, RuntimeError):
             traceback.print_exc()
             return None
 
-    def media_info(self):
+    def media_info(self) -> dict | None:
         """Return the current track metadata dict."""
         try:
             ret = self._cmd("getMetaInfo")

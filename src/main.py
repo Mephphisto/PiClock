@@ -8,6 +8,7 @@ import traceback
 from datetime import datetime, timedelta
 from enum import Enum
 
+import anyio
 import gpiod
 import validators
 from gpiod.line import Direction, Edge, Value
@@ -28,10 +29,13 @@ class State(Enum):
     CLOCK = 3
 
 
-async def main(args):
+async def main(args): # noqa: R0914
     """Run the main display loop."""
-    with open("config.json", encoding="utf-8") as f:
-        cfg = json.load(f)
+    async with await anyio.open_file("config.json", encoding="utf-8") as f:
+        cfg = json.load(await f.read())
+
+    if cfg is None:
+        raise RuntimeError("Failed to load config.json")
     wiim = Wiim(cfg["WiM_IP"])
     display = Inky(
         gpio=gpiod.Chip("/dev/gpiochip4").request_lines(

@@ -1,5 +1,6 @@
-inky
-requests
-pillow
-homeassistant_api  
-validators
+inky==2.7.0
+requests==2.34.2
+pillow==13.0.0
+anyio==4.16.0
+homeassistant_api==6.1.0
+validators==0.36.0

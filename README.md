@@ -1,6 +1,6 @@
 # PiClock
 [![Hadolint](https://github.com/Mephphisto/PiClock/actions/workflows/hadolint.yml/badge.svg)](https://github.com/Mephphisto/PiClock/actions/workflows/hadolint.yml)
-[![Pylint](https://github.com/Mephphisto/PiClock/actions/workflows/pylint.yml/badge.svg)](https://github.com/Mephphisto/PiClock/actions/workflows/pylint.yml)
+[![Ruff](https://github.com/Mephphisto/PiClock/actions/workflows/ruff.yml/badge.svg)](https://github.com/Mephphisto/PiClock/actions/workflows/ruff.yml)
 [![Docker Image CI](https://github.com/Mephphisto/PiClock/actions/workflows/docker-image.yml/badge.svg)](https://github.com/Mephphisto/PiClock/actions/workflows/docker-image.yml)
 [![Pyright Action](https://github.com/Mephphisto/PiClock/actions/workflows/pyright.yml/badge.svg)](https://github.com/Mephphisto/PiClock/actions/workflows/pyright.yml)
 
