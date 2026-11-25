@@ -27,6 +27,9 @@ class HaClient:
         except (KeyError, UnauthorizedError) as e:
             print(f"Error fetching value for {entity_name}: {e}")
             return "Error"
+        except TypeError as e:
+            print(f"TypeError fetching value for {entity_name}: {e}")
+            return "Error"
     async def get_data(self) -> tuple[str, str, str, str]:
         """Return the state and unit of measurement for a named entity."""
         res = []
