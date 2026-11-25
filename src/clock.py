@@ -109,6 +109,8 @@ async def clock_stripy_black(ha_data: tuple[str, str, str, str]) -> Image.Image:
 
 async def clock_stripy_white(ha_data: tuple[str, str, str, str]) -> Image.Image:
     """Render a white background scattered with random black stripes."""
+    font = ImageFont.truetype(FUTURA_DICT, 140)
+    time_s = datetime.now().strftime("%H:%M")
     extended = Image.new("L", RESOLUTION, (255))
     draw = ImageDraw.Draw(extended)
     for _ in range(700):
@@ -122,6 +124,7 @@ async def clock_stripy_white(ha_data: tuple[str, str, str, str]) -> Image.Image:
             fill=(0),
             width=1,
         )
+    draw.text((240, 240), time_s, (255), font=font, anchor="ms", outline=None)
     await _draw_ha(draw, ha_data, (0))
     return extended
 

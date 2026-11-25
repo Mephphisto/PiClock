@@ -33,10 +33,10 @@ class HaClient:
     async def get_data(self) -> tuple[str, str, str, str]:
         """Return the state and unit of measurement for a named entity."""
         res = []
-        for entity_name in self.entities.values():
+        for entity in self.entities:
             try:
-                res.append(await self.get_val(entity_name))
+                res.append(await self.get_val(entity))
             except (KeyError, UnauthorizedError) as e:
-                print(f"Error fetching value for {entity_name}: {e}")
+                print(f"Error fetching value for {entity}: {e}")
                 res.append("Error")
         return tuple(res)
