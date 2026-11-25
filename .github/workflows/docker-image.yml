@@ -1,27 +1,59 @@
 name: Docker Image CI
 on:
   workflow_run:
-    workflows: ["Hadolint"]
-    types:
-      - completed
+    workflows: ["Pylint", "Pyright", "Hadolint"]
+    types: [completed]
     branches: [ "main" ]
   push:
     tags: [ "v*.*.*" ]          # stable releases, e.g. v1.2.3
 
+# If two lint workflows finish at the same time, only one build survives
+concurrency:
+  group: docker-${{ github.event.workflow_run.head_sha || github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
+  gate:
     runs-on: ubuntu-latest
-    # run on a tag push, OR when Hadolint passed on main
+    # quick filter: a tag push, or the triggering lint run passed
     if: >-
       ${{ github.event_name == 'push' ||
           github.event.workflow_run.conclusion == 'success' }}
     permissions:
+      actions: read            # needed for `gh run list`
+    outputs:
+      ok: ${{ steps.check.outputs.ok }}
+    steps:
+    - id: check
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        # tag pushes always build
+        if [ "${{ github.event_name }}" = "push" ]; then
+          echo "ok=true" >> "$GITHUB_OUTPUT"; exit 0
+        fi
+        # the latest run of every lint workflow on main must be green
+        for wf in Pylint Pyright Hadolint; do
+          c=$(gh run list -R "$GITHUB_REPOSITORY" --workflow "$wf" --branch main \
+               --limit 1 --json conclusion -q '.[0].conclusion')
+          echo "$wf: ${c:-<none>}"
+          if [ "$c" != "success" ]; then
+            echo "ok=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+        done
+        echo "ok=true" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: gate
+    if: needs.gate.outputs.ok == 'true'
+    runs-on: ubuntu-latest
+    permissions:
       contents: read
       packages: write          # needed to push to GHCR
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
-        # build the exact commit Hadolint linted; on a tag push this
+        # build the exact commit that was linted; on a tag push this
         # falls back to the tag's own commit
         ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
@@ -46,6 +78,8 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
+        # on workflow_run, read the SHA from the checked-out commit
+        context: ${{ github.event_name == 'workflow_run' && 'git' || 'workflow' }}
         images: ${{ steps.image.outputs.name }}
         tags: |
           type=raw,value=latest,enable=${{ github.event_name == 'workflow_run' }}

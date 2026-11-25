@@ -8,8 +8,11 @@
 
 name: Hadolint
 
-on: [push]
-    
+on: 
+  push:
+    branches: [ "main" ]
+    paths: [ "Dockerfile" ]
+
 permissions:
   contents: read
 
