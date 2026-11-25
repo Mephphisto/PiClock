@@ -72,23 +72,27 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Lowercase the image name
+    - name: Image name and short SHA
       id: image
-      run: echo "name=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+      run: |
+        echo "name=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+        # short SHA of the checked-out (linted) commit; metadata-action's
+        # git context can't handle the detached HEAD, so we tag it ourselves
+        echo "sha=$(git rev-parse --short=7 HEAD)" >> "$GITHUB_OUTPUT"
 
     - name: Extract tags / labels
       id: meta
       uses: docker/metadata-action@v5
       with:
-        # on workflow_run, read the SHA from the checked-out commit
-        context: ${{ github.event_name == 'workflow_run' && 'git' || 'workflow' }}
         images: ${{ steps.image.outputs.name }}
         tags: |
           type=raw,value=latest,enable=${{ github.event_name != 'push' }}
-          type=sha,enable=${{ github.event_name != 'push' }}
+          type=raw,value=sha-${{ steps.image.outputs.sha }},enable=${{ github.event_name != 'push' }}
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
           type=raw,value=stable,enable=${{ github.event_name == 'push' }}
+        labels: |
+          org.opencontainers.image.revision=${{ github.event.workflow_run.head_sha || github.sha }}
 
     - name: Build and push the Docker image
       uses: docker/build-push-action@v5
