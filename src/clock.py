@@ -185,24 +185,16 @@ async def _draw_ha(drw: ImageDraw.ImageDraw,
     """Draw Home Assistant sensor values in the corners of the image."""
     try:
         font = ImageFont.truetype(FUTURA_DICT, 35)
-        temp, humid, baro, percip = disp_data
+        entt_1, entt_2, entt_3, entt_4 = disp_data
 
-        drw.text((20, RESOLUTION[1] - 80), temp, color, font=font, anchor="lm")
-        drw.text((20, RESOLUTION[1] - 30), humid, color, font=font, anchor="lm")
-        drw.text(
-            (RESOLUTION[0] - 260, RESOLUTION[1] - 80),
-            baro,
-            color,
-            font=font,
-            anchor="lm",
-        )
-        drw.text(
-            (RESOLUTION[0] - 260, RESOLUTION[1] - 30),
-            percip,
-            color,
-            font=font,
-            anchor="lm",
-        )
+        drw.text((20, RESOLUTION[1] - 80),
+            entt_1, color, font=font, anchor="lm")
+        drw.text((20, RESOLUTION[1] - 30), 
+            entt_2, color, font=font, anchor="lm")
+        drw.text((RESOLUTION[0] - 20, RESOLUTION[1] - 80),
+            entt_3, color, font=font, anchor="rm")
+        drw.text((RESOLUTION[0] - 20, RESOLUTION[1] - 30),
+            entt_4, color, font=font, anchor="rm")
     except OSError:
         traceback.print_exc()
 
